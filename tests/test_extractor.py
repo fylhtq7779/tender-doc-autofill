@@ -6,8 +6,8 @@ import pytest
 
 from src.extractor import TenderExtractor
 
-# Путь к реальному тестовому документу ТКП
-RFQ_PATH = Path("Материалы/01. Входящий документ от заказчика/Запрос_ТКП_пример.docx")
+# Путь к тестовому документу ТКП (копия в fixtures)
+RFQ_PATH = Path("tests/fixtures/rfq_example.docx")
 
 
 @pytest.fixture()

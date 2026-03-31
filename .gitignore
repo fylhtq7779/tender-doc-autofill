@@ -16,6 +16,9 @@ Thumbs.db
 # Внутренние заметки
 _dev_notes/
 
+# Временные файлы
+tmp/
+
 # Claude Code
 .claude/
 
