@@ -13,6 +13,7 @@ from pathlib import Path
 import click
 
 from src.data_loader import DataLoader
+from src.extractor import TenderExtractor
 from src.generator import DocumentGenerator
 from src.utils import format_money
 
@@ -96,6 +97,41 @@ def validate(data_dir: str) -> None:
         f"calc.json: OK "
         f"(итого: {total_str}, НДС: {vat_str})"
     )
+
+
+@cli.command("extract-tender")
+@click.argument("docx_path", type=click.Path(exists=True))
+@click.option(
+    "-o",
+    "--output",
+    default="data/tender_extracted.json",
+    type=click.Path(),
+    help="Путь для сохранения извлечённых данных (JSON)",
+)
+def extract_tender(docx_path: str, output: str) -> None:
+    """Извлечение данных тендера из DOCX-документа ТКП."""
+    import json
+
+    try:
+        extractor = TenderExtractor(Path(docx_path))
+        data = extractor.extract()
+    except Exception as exc:
+        raise click.ClickException(str(exc)) from exc
+
+    output_path = Path(output)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(
+        json.dumps(data, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    click.echo(f"Извлечено из: {docx_path}")
+    click.echo(f"Сохранено в:  {output_path}")
+
+    # Краткая сводка
+    items_count = len(data.get("items", []))
+    click.echo(f"Позиций: {items_count}")
+    if data.get("purchase_number"):
+        click.echo(f"Закупка: {data['purchase_number']}")
 
 
 if __name__ == "__main__":
