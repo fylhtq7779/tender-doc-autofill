@@ -1,0 +1,31 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+venv/
+.venv/
+*.docx:Zone.Identifier
+.DS_Store
+Thumbs.db
+
+# Материалы (read-only, не часть проекта)
+Материалы/
+
+# Внутренние заметки
+_dev_notes/
+
+# Claude Code
+.claude/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Исходные материалы ТЗ
+image.png
+ТЗ техспециалист.docx.pdf
+ТЗ техспециалист.docx.pdf:Zone.Identifier
+ТЗ техспециалист.md
