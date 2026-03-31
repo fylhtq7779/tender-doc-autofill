@@ -1,0 +1,30 @@
+document:
+  name: "Гарантийное письмо"
+  template: "templates/04_garantiya.docx"
+  output_name: "04_Гарантийное_письмо.docx"
+
+fields:
+  - placeholder: "[Краткое наименование участника]"
+    source: PROFILE
+    path: "company.short_name"
+    required: true
+
+  - placeholder: "[ИНН]"
+    source: PROFILE
+    path: "company.inn"
+    required: true
+
+  - placeholder: "[Предмет закупки]"
+    source: TENDER
+    path: "subject"
+    required: true
+
+  - placeholder: "[Должность подписанта]"
+    source: PROFILE
+    path: "signatory.position"
+    required: true
+
+  - placeholder: "[ФИО подписанта]"
+    source: PROFILE
+    path: "signatory.name_short"
+    required: true
