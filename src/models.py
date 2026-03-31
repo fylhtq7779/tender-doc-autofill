@@ -17,8 +17,12 @@ logger = logging.getLogger(__name__)
 # Утилиты валидации реквизитов
 # ---------------------------------------------------------------------------
 
-def _warn_if_not_digits(value: str, field_name: str, expected_len: int | tuple[int, ...]) -> str:
+def _warn_if_not_digits(value: str | None, field_name: str, expected_len: int | tuple[int, ...]) -> str:
     """Проверяет что строка состоит из цифр заданной длины. Логирует warning при несоответствии."""
+    if value is None:
+        return ""
+    if not value:
+        return value
     lengths = (expected_len,) if isinstance(expected_len, int) else expected_len
     if not value.isdigit() or len(value) not in lengths:
         expected = " или ".join(str(ln) for ln in lengths)
@@ -38,32 +42,32 @@ class Company(BaseModel):
 
     model_config = ConfigDict(extra="ignore")
 
-    full_name: str
-    short_name: str
-    inn: str
-    kpp: str
-    ogrn: str
-    legal_address_full: str
-    legal_address_short: str
-    postal_address: str
-    country: str
-    city: str
+    full_name: str = ""
+    short_name: str = ""
+    inn: Optional[str] = ""
+    kpp: Optional[str] = ""
+    ogrn: Optional[str] = ""
+    legal_address_full: Optional[str] = ""
+    legal_address_short: Optional[str] = ""
+    postal_address: Optional[str] = ""
+    country: Optional[str] = ""
+    city: Optional[str] = ""
 
-    @field_validator("inn")
+    @field_validator("inn", mode="before")
     @classmethod
-    def validate_inn(cls, v: str) -> str:
+    def validate_inn(cls, v: str | None) -> str:
         """ИНН: 10 (юрлицо) или 12 (физлицо) цифр."""
         return _warn_if_not_digits(v, "ИНН", (10, 12))
 
-    @field_validator("kpp")
+    @field_validator("kpp", mode="before")
     @classmethod
-    def validate_kpp(cls, v: str) -> str:
+    def validate_kpp(cls, v: str | None) -> str:
         """КПП: 9 символов."""
         return _warn_if_not_digits(v, "КПП", 9)
 
-    @field_validator("ogrn")
+    @field_validator("ogrn", mode="before")
     @classmethod
-    def validate_ogrn(cls, v: str) -> str:
+    def validate_ogrn(cls, v: str | None) -> str:
         """ОГРН: 13 цифр."""
         return _warn_if_not_digits(v, "ОГРН", 13)
 
@@ -73,20 +77,20 @@ class Bank(BaseModel):
 
     model_config = ConfigDict(extra="ignore")
 
-    name: str
-    account: str
-    correspondent_account: str
-    bik: str
+    name: Optional[str] = ""
+    account: Optional[str] = ""
+    correspondent_account: Optional[str] = ""
+    bik: Optional[str] = ""
 
-    @field_validator("bik")
+    @field_validator("bik", mode="before")
     @classmethod
-    def validate_bik(cls, v: str) -> str:
+    def validate_bik(cls, v: str | None) -> str:
         """БИК: 9 цифр."""
         return _warn_if_not_digits(v, "БИК", 9)
 
-    @field_validator("account", "correspondent_account")
+    @field_validator("account", "correspondent_account", mode="before")
     @classmethod
-    def validate_account(cls, v: str) -> str:
+    def validate_account(cls, v: str | None) -> str:
         """Расчётный/корреспондентский счёт: 20 цифр."""
         return _warn_if_not_digits(v, "Счёт", 20)
 
@@ -96,10 +100,10 @@ class Contact(BaseModel):
 
     model_config = ConfigDict(extra="ignore")
 
-    responsible_name_full: str
-    responsible_name_short: str
-    phone: str
-    email: str
+    responsible_name_full: str = ""
+    responsible_name_short: str = ""
+    phone: str = ""
+    email: str = ""
 
 
 class Signatory(BaseModel):
@@ -107,10 +111,10 @@ class Signatory(BaseModel):
 
     model_config = ConfigDict(extra="ignore")
 
-    position: str
-    name_short: str
-    name_full: str
-    basis: str
+    position: str = ""
+    name_short: str = ""
+    name_full: str = ""
+    basis: str = ""
 
 
 class Compliance(BaseModel):
@@ -162,19 +166,19 @@ class CustomerBank(BaseModel):
 
     model_config = ConfigDict(extra="ignore")
 
-    name: str
-    account: str
-    correspondent_account: str
-    bik: str
+    name: Optional[str] = ""
+    account: Optional[str] = ""
+    correspondent_account: Optional[str] = ""
+    bik: Optional[str] = ""
 
-    @field_validator("bik")
+    @field_validator("bik", mode="before")
     @classmethod
-    def validate_bik(cls, v: str) -> str:
+    def validate_bik(cls, v: str | None) -> str:
         return _warn_if_not_digits(v, "БИК", 9)
 
-    @field_validator("account", "correspondent_account")
+    @field_validator("account", "correspondent_account", mode="before")
     @classmethod
-    def validate_account(cls, v: str) -> str:
+    def validate_account(cls, v: str | None) -> str:
         return _warn_if_not_digits(v, "Счёт", 20)
 
 
@@ -183,8 +187,8 @@ class CustomerSignatory(BaseModel):
 
     model_config = ConfigDict(extra="ignore")
 
-    position: str
-    name: str
+    position: str = ""
+    name: str = ""
 
 
 class Customer(BaseModel):
@@ -192,30 +196,30 @@ class Customer(BaseModel):
 
     model_config = ConfigDict(extra="ignore")
 
-    full_name: str
-    short_name: str
-    legal_address: str
-    postal_address: str
-    email: str
-    inn: str
-    kpp: str
-    ogrn: str
-    bank: CustomerBank
-    signatory: CustomerSignatory
+    full_name: Optional[str] = ""
+    short_name: Optional[str] = ""
+    legal_address: Optional[str] = ""
+    postal_address: Optional[str] = ""
+    email: Optional[str] = ""
+    inn: Optional[str] = ""
+    kpp: Optional[str] = ""
+    ogrn: Optional[str] = ""
+    bank: Optional[CustomerBank] = None
+    signatory: Optional[CustomerSignatory] = None
 
-    @field_validator("inn")
+    @field_validator("inn", mode="before")
     @classmethod
-    def validate_inn(cls, v: str) -> str:
+    def validate_inn(cls, v: str | None) -> str:
         return _warn_if_not_digits(v, "ИНН", (10, 12))
 
-    @field_validator("kpp")
+    @field_validator("kpp", mode="before")
     @classmethod
-    def validate_kpp(cls, v: str) -> str:
+    def validate_kpp(cls, v: str | None) -> str:
         return _warn_if_not_digits(v, "КПП", 9)
 
-    @field_validator("ogrn")
+    @field_validator("ogrn", mode="before")
     @classmethod
-    def validate_ogrn(cls, v: str) -> str:
+    def validate_ogrn(cls, v: str | None) -> str:
         return _warn_if_not_digits(v, "ОГРН", 13)
 
 
