@@ -1,4 +1,4 @@
-"""Тесты для TenderExtractor — извлечение данных тендера из ТКП DOCX."""
+"""Тесты для TenderExtractor - извлечение данных тендера из ТКП DOCX."""
 
 from pathlib import Path
 
@@ -12,7 +12,7 @@ RFQ_PATH = Path("tests/fixtures/rfq_example.docx")
 
 @pytest.fixture()
 def rfq_result() -> dict:
-    """Извлечённые данные из реального ТКП — кешируем для всех тестов."""
+    """Извлечённые данные из реального ТКП - кешируем для всех тестов."""
     extractor = TenderExtractor(RFQ_PATH)
     return extractor.extract()
 
@@ -68,7 +68,7 @@ class TestExtractDefaults:
     """Поля, отсутствующие в ТКП, имеют значения по умолчанию."""
 
     def test_defaults_for_missing_fields(self, rfq_result: dict) -> None:
-        """Поля без источника в ТКП — None или значение по умолчанию."""
+        """Поля без источника в ТКП - None или значение по умолчанию."""
         assert rfq_result["currency"] == "RUB"
         assert rfq_result.get("offer_validity_days") is None
         assert rfq_result.get("contract_number") is None

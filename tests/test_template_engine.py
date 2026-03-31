@@ -1,4 +1,4 @@
-"""Тесты для TemplateEngine — работа с DOCX-шаблонами."""
+"""Тесты для TemplateEngine - работа с DOCX-шаблонами."""
 
 from pathlib import Path
 
@@ -10,7 +10,7 @@ from src.template_engine import TemplateEngine
 
 
 # ---------------------------------------------------------------------------
-# Фикстуры — создание тестовых DOCX
+# Фикстуры - создание тестовых DOCX
 # ---------------------------------------------------------------------------
 
 @pytest.fixture()
@@ -139,7 +139,7 @@ class TestFillTableRow:
         assert table.cell(1, 2).text == "100"
 
     def test_fill_row_partial(self, doc_for_table_row: Path) -> None:
-        """Частичное заполнение — только указанные колонки."""
+        """Частичное заполнение - только указанные колонки."""
         engine = TemplateEngine(doc_for_table_row)
         engine.fill_table_row(
             table_idx=0,
@@ -153,7 +153,7 @@ class TestFillTableRow:
         assert table.cell(1, 1).text == "Кабель"
 
     def test_fill_row_invalid_table_index(self, doc_for_table_row: Path) -> None:
-        """Невалидный индекс таблицы — IndexError."""
+        """Невалидный индекс таблицы - IndexError."""
         engine = TemplateEngine(doc_for_table_row)
         with pytest.raises(IndexError):
             engine.fill_table_row(table_idx=99, row_idx=0, col_values={0: "X"})
@@ -180,6 +180,6 @@ class TestSave:
         engine.replace_placeholder("[NAME]", "Замена")
         engine.save(output)
 
-        # Перечитываем оригинал — плейсхолдер должен быть на месте
+        # Перечитываем оригинал - плейсхолдер должен быть на месте
         original = Document(str(doc_with_paragraph))
         assert "[NAME]" in original.paragraphs[0].text

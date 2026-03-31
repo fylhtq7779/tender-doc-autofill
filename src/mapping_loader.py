@@ -1,12 +1,12 @@
 """Загрузка и парсинг YAML-маппингов документов.
 
 Классы:
-  FieldMapping       — описание одного плейсхолдера в документе
-  ColumnMapping      — описание одной колонки в табличной строке
-  TableRowsMapping   — описание табличных строк (позиции закупки/расчёта)
-  DocumentInfo       — метаданные документа (имя, шаблон, выходной файл)
-  DocumentMapping    — полный маппинг документа
-  MappingLoader      — загрузчик YAML-файлов маппинга
+  FieldMapping       - описание одного плейсхолдера в документе
+  ColumnMapping      - описание одной колонки в табличной строке
+  TableRowsMapping   - описание табличных строк (позиции закупки/расчёта)
+  DocumentInfo       - метаданные документа (имя, шаблон, выходной файл)
+  DocumentMapping    - полный маппинг документа
+  MappingLoader      - загрузчик YAML-файлов маппинга
 """
 
 from __future__ import annotations
@@ -22,7 +22,7 @@ from pydantic import BaseModel
 # ---------------------------------------------------------------------------
 
 class FieldMapping(BaseModel):
-    """Описание одного плейсхолдера — поле для подстановки в документе."""
+    """Описание одного плейсхолдера - поле для подстановки в документе."""
 
     placeholder: str
     source: str        # PROFILE | TENDER | CALC | SYSTEM
@@ -41,7 +41,7 @@ class ColumnMapping(BaseModel):
 
 
 class TableRowsMapping(BaseModel):
-    """Описание табличных строк — заполнение позиций из массива данных."""
+    """Описание табличных строк - заполнение позиций из массива данных."""
 
     table_idx: int
     source: str          # CALC или TENDER

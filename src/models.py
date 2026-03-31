@@ -2,7 +2,7 @@
 
 Все поля соответствуют структуре JSON-файлов из data/.
 Необязательные поля имеют значения по умолчанию.
-Валидация реквизитов (ИНН, КПП, ОГРН, БИК, р/с) — через warning в лог.
+Валидация реквизитов (ИНН, КПП, ОГРН, БИК, р/с) - через warning в лог.
 """
 
 import logging
@@ -145,7 +145,7 @@ class Reference(BaseModel):
 
 
 class CompanyProfile(BaseModel):
-    """Корневая модель — профиль компании (PROFILE)."""
+    """Корневая модель - профиль компании (PROFILE)."""
 
     model_config = ConfigDict(extra="ignore")
 
@@ -228,11 +228,11 @@ class Delivery(BaseModel):
 
     model_config = ConfigDict(extra="ignore")
 
-    place: str
-    basis: str
-    start_text: str = ""
-    end_text: str = ""
-    term_text: str = ""
+    place: Optional[str] = ""
+    basis: Optional[str] = ""
+    start_text: Optional[str] = ""
+    end_text: Optional[str] = ""
+    term_text: Optional[str] = ""
 
 
 class Payment(BaseModel):
@@ -240,7 +240,7 @@ class Payment(BaseModel):
 
     model_config = ConfigDict(extra="ignore")
 
-    term_text: str
+    term_text: Optional[str] = ""
 
 
 class Warranty(BaseModel):
@@ -248,7 +248,7 @@ class Warranty(BaseModel):
 
     model_config = ConfigDict(extra="ignore")
 
-    term_text: str
+    term_text: Optional[str] = ""
 
 
 class TenderItem(BaseModel):
@@ -256,33 +256,33 @@ class TenderItem(BaseModel):
 
     model_config = ConfigDict(extra="ignore")
 
-    line_no: int
-    article: str
-    name: str
-    unit: str
-    qty: int | float
-    nmc_unit_price: float
-    required_delivery_date: str = ""
-    customer_name_code: str = ""
-    customer_org: str = ""
-    basis: str = ""
+    line_no: int = 0
+    article: Optional[str] = ""
+    name: Optional[str] = ""
+    unit: Optional[str] = ""
+    qty: int | float = 0
+    nmc_unit_price: float = 0.0
+    required_delivery_date: Optional[str] = ""
+    customer_name_code: Optional[str] = ""
+    customer_org: Optional[str] = ""
+    basis: Optional[str] = ""
 
 
 class TenderData(BaseModel):
-    """Корневая модель — данные тендера (TENDER)."""
+    """Корневая модель - данные тендера (TENDER)."""
 
     model_config = ConfigDict(extra="ignore")
 
-    purchase_number: str
-    lot_number: str
-    lot_code: str = ""
-    subject: str
-    bid_deadline: str = ""
-    offer_validity_days: int = 0
-    contract_number: str = ""
-    currency: str = "RUB"
-    customer: Customer
-    delivery: Delivery
+    purchase_number: Optional[str] = ""
+    lot_number: Optional[str] = ""
+    lot_code: Optional[str] = ""
+    subject: Optional[str] = ""
+    bid_deadline: Optional[str] = ""
+    offer_validity_days: Optional[int] = 0
+    contract_number: Optional[str] = ""
+    currency: Optional[str] = "RUB"
+    customer: Optional[Customer] = None
+    delivery: Optional[Delivery] = None
     payment: Optional[Payment] = None
     warranty: Optional[Warranty] = None
     items: list[TenderItem] = []
@@ -318,7 +318,7 @@ class CalcItem(BaseModel):
 
 
 class CalcData(BaseModel):
-    """Корневая модель — расчёт цены (CALC)."""
+    """Корневая модель - расчёт цены (CALC)."""
 
     model_config = ConfigDict(extra="ignore")
 

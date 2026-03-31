@@ -114,10 +114,13 @@ class DocumentGenerator:
         source_data = self._get_source_data(field.source, context)
         value = resolve_dot_path(source_data, field.path)
 
-        if value is None:
+        # Пустое значение: None или пустая строка
+        is_empty = value is None or (isinstance(value, str) and not value.strip())
+
+        if is_empty:
             if field.required:
                 logger.warning(
-                    "Обязательное поле '%s' (путь: %s.%s) не найдено — подставлен маркер",
+                    "Обязательное поле '%s' (путь: %s.%s) пустое - подставлен маркер",
                     field.placeholder,
                     field.source,
                     field.path,
@@ -231,7 +234,7 @@ class DocumentGenerator:
                 engine.fill_table_row(table_row.table_idx, row_idx, col_values)
             except IndexError:
                 logger.warning(
-                    "Строка %d выходит за пределы таблицы %d — пропускаем",
+                    "Строка %d выходит за пределы таблицы %d - пропускаем",
                     row_idx,
                     table_row.table_idx,
                 )

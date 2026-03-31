@@ -1,13 +1,13 @@
 """Комплексные edge case и стресс-тесты для системы генерации тендерных документов.
 
 Категории тестов:
-  1. DataLoader — пустые/экстремальные JSON
-  2. Utils — граничные значения форматирования
-  3. TemplateEngine — нестандартные подстановки
-  4. MappingLoader — битые/неполные YAML
-  5. Generator — интеграционные edge cases
-  6. Extractor — пустые/несуществующие DOCX
-  7. CLI — невалидные аргументы
+  1. DataLoader - пустые/экстремальные JSON
+  2. Utils - граничные значения форматирования
+  3. TemplateEngine - нестандартные подстановки
+  4. MappingLoader - битые/неполные YAML
+  5. Generator - интеграционные edge cases
+  6. Extractor - пустые/несуществующие DOCX
+  7. CLI - невалидные аргументы
 """
 
 from __future__ import annotations
@@ -194,7 +194,7 @@ class TestDataLoaderEdgeCases:
     """Граничные случаи загрузки JSON-данных."""
 
     def test_empty_json_file(self, tmp_path: Path) -> None:
-        """Пустой JSON ({}) без обязательных полей — ValidationError."""
+        """Пустой JSON ({}) без обязательных полей - ValidationError."""
         (tmp_path / "company_profile.json").write_text("{}", encoding="utf-8")
         (tmp_path / "tender.json").write_text("{}", encoding="utf-8")
         (tmp_path / "calc.json").write_text("{}", encoding="utf-8")
@@ -204,7 +204,7 @@ class TestDataLoaderEdgeCases:
             loader.load_all()
 
     def test_json_with_extra_fields(self, tmp_path: Path) -> None:
-        """JSON с лишними полями — extra поля игнорируются (model_config extra=ignore)."""
+        """JSON с лишними полями - extra поля игнорируются (model_config extra=ignore)."""
         profile = _minimal_profile()
         profile["unknown_field"] = "должно быть проигнорировано"
         profile["company"]["extra_stuff"] = 42
@@ -225,7 +225,7 @@ class TestDataLoaderEdgeCases:
         assert ctx.profile.company.full_name == 'ООО «Ёлочка» № 1'
 
     def test_very_long_company_name(self, tmp_path: Path) -> None:
-        """Имя компании > 500 символов — загружается без ошибок."""
+        """Имя компании > 500 символов - загружается без ошибок."""
         profile = _minimal_profile()
         long_name = "ООО «" + "А" * 500 + "»"
         profile["company"]["full_name"] = long_name
@@ -236,21 +236,21 @@ class TestDataLoaderEdgeCases:
         assert len(ctx.profile.company.full_name) > 500
 
     def test_empty_string_fields(self, tmp_path: Path) -> None:
-        """Пустые строки в ИНН/КПП — загрузка с warning, без crash."""
+        """Пустые строки в ИНН/КПП - загрузка с warning, без crash."""
         profile = _minimal_profile()
         profile["company"]["inn"] = ""
         profile["company"]["kpp"] = ""
         _write_jsons(tmp_path, profile=profile)
 
         loader = DataLoader(data_dir=tmp_path)
-        # Пустая строка не пройдёт валидацию цифр — но модель допускает,
+        # Пустая строка не пройдёт валидацию цифр - но модель допускает,
         # только warning в лог
         ctx = loader.load_all()
         assert ctx.profile.company.inn == ""
         assert ctx.profile.company.kpp == ""
 
     def test_none_values_in_json(self, tmp_path: Path) -> None:
-        """null-значения в необязательных полях — загружаются как None/default."""
+        """null-значения в необязательных полях - загружаются как None/default."""
         tender = _minimal_tender()
         tender["payment"] = None
         tender["warranty"] = None
@@ -262,7 +262,7 @@ class TestDataLoaderEdgeCases:
         assert ctx.tender.warranty is None
 
     def test_zero_items(self, tmp_path: Path) -> None:
-        """Пустой список items — загрузка без ошибок."""
+        """Пустой список items - загрузка без ошибок."""
         tender = _minimal_tender(items=[])
         calc = _minimal_calc(items=[])
         _write_jsons(tmp_path, tender=tender, calc=calc)
@@ -273,7 +273,7 @@ class TestDataLoaderEdgeCases:
         assert ctx.calc.items == []
 
     def test_single_item(self, tmp_path: Path) -> None:
-        """Один элемент в items — загружается корректно."""
+        """Один элемент в items - загружается корректно."""
         tender = _minimal_tender(items=[
             {"line_no": 1, "article": "A1", "name": "Кабель", "unit": "м",
              "qty": 100, "nmc_unit_price": 150.0},
@@ -286,7 +286,7 @@ class TestDataLoaderEdgeCases:
         assert ctx.tender.items[0].name == "Кабель"
 
     def test_negative_price(self, tmp_path: Path) -> None:
-        """Отрицательная цена — модель принимает (float без ограничений)."""
+        """Отрицательная цена - модель принимает (float без ограничений)."""
         calc = _minimal_calc(items=[
             {"line_no": 1, "unit_price_wo_vat": -100.0},
         ])
@@ -297,7 +297,7 @@ class TestDataLoaderEdgeCases:
         assert ctx.calc.items[0].unit_price_wo_vat == -100.0
 
     def test_zero_price(self, tmp_path: Path) -> None:
-        """Нулевая цена — загрузка без ошибок."""
+        """Нулевая цена - загрузка без ошибок."""
         calc = _minimal_calc(items=[
             {"line_no": 1, "unit_price_wo_vat": 0.0},
         ])
@@ -308,7 +308,7 @@ class TestDataLoaderEdgeCases:
         assert ctx.calc.items[0].unit_price_wo_vat == 0.0
 
     def test_huge_amount(self, tmp_path: Path) -> None:
-        """Огромная сумма — загрузка без ошибок."""
+        """Огромная сумма - загрузка без ошибок."""
         calc = _minimal_calc(total_with_vat=999_999_999_999.99)
         _write_jsons(tmp_path, calc=calc)
 
@@ -317,7 +317,7 @@ class TestDataLoaderEdgeCases:
         assert ctx.calc.total_with_vat == pytest.approx(999_999_999_999.99, rel=1e-9)
 
     def test_fractional_kopecks(self, tmp_path: Path) -> None:
-        """Три десятичных знака (123.456) — Pydantic принимает float без округления."""
+        """Три десятичных знака (123.456) - Pydantic принимает float без округления."""
         calc = _minimal_calc(total_with_vat=123.456)
         _write_jsons(tmp_path, calc=calc)
 
@@ -334,18 +334,18 @@ class TestFormatMoneyEdgeCases:
     """Граничные случаи форматирования денежных сумм."""
 
     def test_format_money_negative(self) -> None:
-        """Отрицательная сумма — знак минус сохраняется."""
+        """Отрицательная сумма - знак минус сохраняется."""
         result = format_money(-1000.0)
         # Должен содержать "1 000" и запятую
         assert "1 000" in result or "1000" in result
 
     def test_format_money_tiny(self) -> None:
-        """Минимальная сумма 0.01 — отображается как 0,01."""
+        """Минимальная сумма 0.01 - отображается как 0,01."""
         result = format_money(0.01)
         assert result == "0,01"
 
     def test_format_money_huge(self) -> None:
-        """Миллиард — разделители тысяч расставлены корректно."""
+        """Миллиард - разделители тысяч расставлены корректно."""
         result = format_money(1_000_000_000.0)
         assert result == "1 000 000 000,00"
 
@@ -354,17 +354,17 @@ class TestFormatDateLongEdgeCases:
     """Граничные случаи форматирования дат."""
 
     def test_format_date_long_wrong_format(self) -> None:
-        """Формат YYYY-MM-DD (ISO) — возвращает исходную строку."""
+        """Формат YYYY-MM-DD (ISO) - возвращает исходную строку."""
         result = format_date_long("2026-03-31")
         assert result == "2026-03-31"
 
     def test_format_date_long_january_first(self) -> None:
-        """1 января — граничный день."""
+        """1 января - граничный день."""
         result = format_date_long("01.01.2026")
         assert result == "«01» января 2026 года"
 
     def test_format_date_long_december_last(self) -> None:
-        """31 декабря — граничный день."""
+        """31 декабря - граничный день."""
         result = format_date_long("31.12.2026")
         assert result == "«31» декабря 2026 года"
 
@@ -373,31 +373,31 @@ class TestResolveDotPathEdgeCases:
     """Граничные случаи для resolve_dot_path."""
 
     def test_deeply_nested(self) -> None:
-        """5 уровней вложенности — доступ корректен."""
+        """5 уровней вложенности - доступ корректен."""
         data = {"a": {"b": {"c": {"d": {"e": "глубоко"}}}}}
         result = resolve_dot_path(data, "a.b.c.d.e")
         assert result == "глубоко"
 
     def test_array_out_of_bounds(self) -> None:
-        """Индекс массива за пределами — None."""
+        """Индекс массива за пределами - None."""
         data = {"items": [{"name": "один"}]}
         result = resolve_dot_path(data, "items[999].name")
         assert result is None
 
     def test_empty_dict(self) -> None:
-        """Пустой словарь — None для любого пути."""
+        """Пустой словарь - None для любого пути."""
         result = resolve_dot_path({}, "any.path")
         assert result is None
 
     def test_none_input(self) -> None:
-        """None как входные данные — TypeError или None."""
+        """None как входные данные - TypeError или None."""
         # resolve_dot_path ожидает dict, но None не должен вызывать crash
         # если path пуст - возвращает data (None), если нет - None
         result = resolve_dot_path({}, "nonexistent")
         assert result is None
 
     def test_special_chars_in_value(self) -> None:
-        """Значение содержит спецсимволы — извлекается как есть."""
+        """Значение содержит спецсимволы - извлекается как есть."""
         data = {"field": "Значение с <>&\"' символами"}
         result = resolve_dot_path(data, "field")
         assert result == "Значение с <>&\"' символами"
@@ -411,7 +411,7 @@ class TestTemplateEngineEdgeCases:
     """Граничные случаи для TemplateEngine."""
 
     def test_placeholder_not_found(self, tmp_path: Path) -> None:
-        """Плейсхолдер отсутствует в документе — 0 замен, без ошибок."""
+        """Плейсхолдер отсутствует в документе - 0 замен, без ошибок."""
         path = tmp_path / "test.docx"
         _make_simple_docx(path, "Обычный текст без плейсхолдеров")
 
@@ -420,7 +420,7 @@ class TestTemplateEngineEdgeCases:
         assert count == 0
 
     def test_placeholder_appears_multiple_times(self, tmp_path: Path) -> None:
-        """Один плейсхолдер в 3 местах — все 3 заменяются."""
+        """Один плейсхолдер в 3 местах - все 3 заменяются."""
         path = tmp_path / "test.docx"
         doc = Document()
         doc.add_paragraph("[X] первый")
@@ -434,7 +434,7 @@ class TestTemplateEngineEdgeCases:
         assert count == 3
 
     def test_empty_value_replacement(self, tmp_path: Path) -> None:
-        """Замена на пустую строку — плейсхолдер удаляется."""
+        """Замена на пустую строку - плейсхолдер удаляется."""
         path = tmp_path / "test.docx"
         _make_simple_docx(path, "Значение: [VAL].")
 
@@ -445,7 +445,7 @@ class TestTemplateEngineEdgeCases:
         assert "Значение: ." in text
 
     def test_very_long_value(self, tmp_path: Path) -> None:
-        """Замена на строку из 10000 символов — работает без ошибок."""
+        """Замена на строку из 10000 символов - работает без ошибок."""
         path = tmp_path / "test.docx"
         _make_simple_docx(path, "[LONG]")
 
@@ -456,21 +456,21 @@ class TestTemplateEngineEdgeCases:
         assert len(engine._doc.paragraphs[0].text) == 10000
 
     def test_special_xml_chars_in_value(self, tmp_path: Path) -> None:
-        """Спецсимволы XML (<>&\"') в значении — подставляются корректно."""
+        """Спецсимволы XML (<>&\"') в значении - подставляются корректно."""
         path = tmp_path / "test.docx"
         _make_simple_docx(path, "[VAL]")
 
         engine = TemplateEngine(path)
         engine.replace_placeholder("[VAL]", 'ООО "A&B" <test>')
 
-        # Сохраняем и перечитываем — проверяем что XML не сломан
+        # Сохраняем и перечитываем - проверяем что XML не сломан
         output = tmp_path / "out.docx"
         engine.save(output)
         doc2 = Document(str(output))
         assert doc2.paragraphs[0].text == 'ООО "A&B" <test>'
 
     def test_newline_in_value(self, tmp_path: Path) -> None:
-        """Значение с \\n — подставляется (может не отображаться как перевод строки в DOCX)."""
+        """Значение с \\n - подставляется (может не отображаться как перевод строки в DOCX)."""
         path = tmp_path / "test.docx"
         _make_simple_docx(path, "[VAL]")
 
@@ -481,7 +481,7 @@ class TestTemplateEngineEdgeCases:
         assert "строка2" in text
 
     def test_fill_row_out_of_bounds(self, tmp_path: Path) -> None:
-        """row_idx за пределами таблицы — IndexError."""
+        """row_idx за пределами таблицы - IndexError."""
         path = tmp_path / "test.docx"
         _make_docx_with_table(path, rows=2, cols=2)
 
@@ -498,7 +498,7 @@ class TestMappingLoaderEdgeCases:
     """Граничные случаи загрузки YAML-маппингов."""
 
     def test_empty_yaml_file(self, tmp_path: Path) -> None:
-        """Пустой YAML-файл — ошибка валидации (нет document)."""
+        """Пустой YAML-файл - ошибка валидации (нет document)."""
         path = tmp_path / "empty.yaml"
         path.write_text("", encoding="utf-8")
 
@@ -507,7 +507,7 @@ class TestMappingLoaderEdgeCases:
             loader.load(path)
 
     def test_yaml_with_no_fields(self, tmp_path: Path) -> None:
-        """YAML с document, но без fields — загрузка OK (fields по умолчанию [])."""
+        """YAML с document, но без fields - загрузка OK (fields по умолчанию [])."""
         data = {
             "document": {
                 "name": "Тест",
@@ -524,7 +524,7 @@ class TestMappingLoaderEdgeCases:
         assert result.fields == []
 
     def test_yaml_missing_document_section(self, tmp_path: Path) -> None:
-        """YAML без секции document — ValidationError."""
+        """YAML без секции document - ValidationError."""
         data = {"fields": []}
         path = tmp_path / "test.yaml"
         path.write_text(yaml.dump(data, allow_unicode=True), encoding="utf-8")
@@ -534,7 +534,7 @@ class TestMappingLoaderEdgeCases:
             loader.load(path)
 
     def test_yaml_invalid_source(self, tmp_path: Path) -> None:
-        """source: UNKNOWN — маппинг загружается (валидация source — в generator)."""
+        """source: UNKNOWN - маппинг загружается (валидация source - в generator)."""
         data = {
             "document": {
                 "name": "Тест",
@@ -553,7 +553,7 @@ class TestMappingLoaderEdgeCases:
         assert result.fields[0].source == "UNKNOWN"
 
     def test_duplicate_placeholders_in_mapping(self, tmp_path: Path) -> None:
-        """Один плейсхолдер дважды в маппинге — оба загружаются (без дедупликации)."""
+        """Один плейсхолдер дважды в маппинге - оба загружаются (без дедупликации)."""
         data = {
             "document": {
                 "name": "Тест",
@@ -582,7 +582,7 @@ class TestGeneratorEdgeCases:
     """Интеграционные граничные случаи генератора."""
 
     def test_generate_with_missing_optional_data(self, tmp_path: Path) -> None:
-        """Отсутствующие необязательные поля — документ генерируется."""
+        """Отсутствующие необязательные поля - документ генерируется."""
         gen = _setup_generator_env(
             tmp_path,
             fields=[
@@ -613,7 +613,7 @@ class TestGeneratorEdgeCases:
         assert "[TOTAL]" not in text
 
     def test_generate_produces_valid_docx(self, tmp_path: Path) -> None:
-        """Сгенерированный файл — валидный DOCX (открывается python-docx)."""
+        """Сгенерированный файл - валидный DOCX (открывается python-docx)."""
         gen = _setup_generator_env(
             tmp_path,
             fields=[
@@ -632,7 +632,7 @@ class TestGeneratorEdgeCases:
         assert len(doc.paragraphs) > 0
 
     def test_generate_all_fields_replaced(self, tmp_path: Path) -> None:
-        """Все плейсхолдеры из маппинга заменены — ни одного [...] не осталось."""
+        """Все плейсхолдеры из маппинга заменены - ни одного [...] не осталось."""
         gen = _setup_generator_env(
             tmp_path,
             fields=[
@@ -668,7 +668,7 @@ class TestGeneratorEdgeCases:
         assert "[TOTAL]" not in full_text
 
     def test_generate_idempotent(self, tmp_path: Path) -> None:
-        """Двойной запуск генерации — одинаковый результат (перезапись файла)."""
+        """Двойной запуск генерации - одинаковый результат (перезапись файла)."""
         gen = _setup_generator_env(
             tmp_path,
             fields=[
@@ -686,7 +686,7 @@ class TestGeneratorEdgeCases:
         doc1 = Document(str(paths1[0]))
         text1 = doc1.paragraphs[0].text
 
-        # Второй запуск — перезаписывает файл
+        # Второй запуск - перезаписывает файл
         paths2 = gen.generate_all()
         doc2 = Document(str(paths2[0]))
         text2 = doc2.paragraphs[0].text
@@ -703,7 +703,7 @@ class TestExtractorEdgeCases:
     """Граничные случаи для TenderExtractor."""
 
     def test_extract_from_empty_docx(self, tmp_path: Path) -> None:
-        """Пустой DOCX (без параграфов с данными) — пустые строки, без crash."""
+        """Пустой DOCX (без параграфов с данными) - пустые строки, без crash."""
         path = tmp_path / "empty.docx"
         doc = Document()
         doc.save(str(path))
@@ -711,13 +711,13 @@ class TestExtractorEdgeCases:
         extractor = TenderExtractor(path)
         result = extractor.extract()
 
-        # Все текстовые поля — пустые строки
+        # Все текстовые поля - пустые строки
         assert result["purchase_number"] == ""
         assert result["subject"] == ""
         assert result["items"] == []
 
     def test_extract_nonexistent_file(self) -> None:
-        """Несуществующий файл — FileNotFoundError."""
+        """Несуществующий файл - FileNotFoundError."""
         with pytest.raises(FileNotFoundError):
             TenderExtractor("/nonexistent/path/file.docx")
 
@@ -730,7 +730,7 @@ class TestCliEdgeCases:
     """Граничные случаи CLI."""
 
     def test_cli_generate_nonexistent_data(self, tmp_path: Path) -> None:
-        """generate с --data-dir /nonexistent — exit code != 0."""
+        """generate с --data-dir /nonexistent - exit code != 0."""
         from click.testing import CliRunner
         from src.main import cli
 
@@ -744,7 +744,7 @@ class TestCliEdgeCases:
         assert result.exit_code != 0
 
     def test_cli_generate_nonexistent_mappings(self, tmp_path: Path) -> None:
-        """generate с --mappings-dir /nonexistent — exit code != 0 или 0 документов."""
+        """generate с --mappings-dir /nonexistent - exit code != 0 или 0 документов."""
         from click.testing import CliRunner
         from src.main import cli
 
@@ -767,7 +767,7 @@ class TestCliEdgeCases:
             assert result.exit_code != 0
 
     def test_cli_extract_nonexistent_file(self, tmp_path: Path) -> None:
-        """extract-tender с несуществующим файлом — exit code != 0."""
+        """extract-tender с несуществующим файлом - exit code != 0."""
         from click.testing import CliRunner
         from src.main import cli
 

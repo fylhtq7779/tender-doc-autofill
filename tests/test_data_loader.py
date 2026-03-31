@@ -1,4 +1,4 @@
-"""Тесты для DataLoader — загрузка и валидация JSON-данных."""
+"""Тесты для DataLoader - загрузка и валидация JSON-данных."""
 
 import json
 import re
@@ -10,10 +10,10 @@ from src.data_loader import DataContext, DataLoader, SystemData
 
 
 class TestLoadAll:
-    """Тесты для DataLoader.load_all — загрузка всех источников."""
+    """Тесты для DataLoader.load_all - загрузка всех источников."""
 
     def test_load_all_success(self, tmp_path: Path) -> None:
-        """Загрузка 3 JSON + системные данные — все поля доступны."""
+        """Загрузка 3 JSON + системные данные - все поля доступны."""
         _write_test_jsons(tmp_path)
         loader = DataLoader(data_dir=tmp_path)
         ctx = loader.load_all()
@@ -24,13 +24,13 @@ class TestLoadAll:
         assert isinstance(ctx.system, SystemData)
 
     def test_missing_file(self, tmp_path: Path) -> None:
-        """Отсутствующий JSON — FileNotFoundError с именем файла."""
+        """Отсутствующий JSON - FileNotFoundError с именем файла."""
         loader = DataLoader(data_dir=tmp_path)
         with pytest.raises(FileNotFoundError, match="company_profile.json"):
             loader.load_all()
 
     def test_invalid_json_structure(self, tmp_path: Path) -> None:
-        """Невалидная структура JSON — ValidationError."""
+        """Невалидная структура JSON - ValidationError."""
         # Пишем JSON без обязательного поля company
         (tmp_path / "company_profile.json").write_text(
             '{"not_company": {}}', encoding="utf-8"
@@ -48,7 +48,7 @@ class TestLoadAll:
 
 
 class TestSystemData:
-    """Тесты для SystemData — автогенерируемые системные поля."""
+    """Тесты для SystemData - автогенерируемые системные поля."""
 
     def test_current_date_format(self) -> None:
         """current_date соответствует формату DD.MM.YYYY."""

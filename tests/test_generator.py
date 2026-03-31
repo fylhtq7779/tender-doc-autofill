@@ -1,4 +1,4 @@
-"""Тесты для DocumentGenerator — генерация документов по маппингу."""
+"""Тесты для DocumentGenerator - генерация документов по маппингу."""
 
 import json
 from pathlib import Path
@@ -11,7 +11,7 @@ from src.generator import DocumentGenerator
 
 
 # ---------------------------------------------------------------------------
-# Фикстуры — создание тестового окружения
+# Фикстуры - создание тестового окружения
 # ---------------------------------------------------------------------------
 
 def _create_test_docx(path: Path) -> None:
@@ -165,7 +165,7 @@ class TestGenerateDocument:
     """Тесты для DocumentGenerator.generate_document."""
 
     def test_generate_document(self, tmp_path: Path) -> None:
-        """Генерация документа — файл создан, плейсхолдеры заменены."""
+        """Генерация документа - файл создан, плейсхолдеры заменены."""
         # Подготовка: данные, шаблон, маппинг
         data_dir = tmp_path / "data"
         data_dir.mkdir()
@@ -262,7 +262,7 @@ class TestGenerateDocument:
         assert "[НЕ УКАЗАНО]" in full_text
 
     def test_transform_money(self, tmp_path: Path) -> None:
-        """Трансформация money — число форматируется с пробелами и запятой."""
+        """Трансформация money - число форматируется с пробелами и запятой."""
         data_dir = tmp_path / "data"
         data_dir.mkdir()
         _create_test_jsons(data_dir)
@@ -308,7 +308,7 @@ class TestGenerateAll:
     """Тесты для DocumentGenerator.generate_all."""
 
     def test_generate_all(self, tmp_path: Path) -> None:
-        """generate_all — обрабатывает все маппинги, возвращает список путей."""
+        """generate_all - обрабатывает все маппинги, возвращает список путей."""
         data_dir = tmp_path / "data"
         data_dir.mkdir()
         _create_test_jsons(data_dir)

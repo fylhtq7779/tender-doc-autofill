@@ -1,4 +1,4 @@
-"""Тесты для CLI точки входа — команды generate и validate."""
+"""Тесты для CLI точки входа - команды generate и validate."""
 
 import json
 from pathlib import Path
@@ -10,7 +10,7 @@ from docx import Document
 
 
 # ---------------------------------------------------------------------------
-# Фикстуры — создание тестового окружения
+# Фикстуры - создание тестового окружения
 # ---------------------------------------------------------------------------
 
 def _create_test_docx(path: Path) -> None:
@@ -248,7 +248,7 @@ class TestValidate:
 
         data_dir = tmp_path / "data"
         data_dir.mkdir()
-        # Создаём только один файл — остальные отсутствуют
+        # Создаём только один файл - остальные отсутствуют
         (data_dir / "company_profile.json").write_text("{}", encoding="utf-8")
 
         runner = CliRunner()

@@ -1,4 +1,4 @@
-"""CLI точка входа — команды generate и validate.
+"""CLI точка входа - команды generate и validate.
 
 Использование:
   python -m src.main generate [--data-dir ...] [--mappings-dir ...] [--output-dir ...]
@@ -20,7 +20,7 @@ from src.utils import format_money
 
 @click.group()
 def cli() -> None:
-    """Homelio — автозаполнение тендерных DOCX-документов."""
+    """Homelio - автозаполнение тендерных DOCX-документов."""
 
 
 @cli.command()

@@ -1,4 +1,4 @@
-"""Тесты для MappingLoader — загрузка и парсинг YAML-маппингов."""
+"""Тесты для MappingLoader - загрузка и парсинг YAML-маппингов."""
 
 from pathlib import Path
 
@@ -19,7 +19,7 @@ class TestLoadValidMapping:
     """Загрузка корректного YAML-маппинга."""
 
     def test_load_valid_mapping(self, tmp_path: Path) -> None:
-        """Парсинг полного маппинга — все поля, таблицы, документ."""
+        """Парсинг полного маппинга - все поля, таблицы, документ."""
         mapping_file = tmp_path / "01_anketa.yaml"
         mapping_file.write_text(
             yaml.dump(_full_mapping_data(), allow_unicode=True),
@@ -45,7 +45,7 @@ class TestLoadAllSorted:
     """Загрузка всех маппингов из директории, отсортированных по имени файла."""
 
     def test_load_all_sorted(self, tmp_path: Path) -> None:
-        """Два YAML-файла — загружаются в алфавитном порядке."""
+        """Два YAML-файла - загружаются в алфавитном порядке."""
         # Создаём файлы в обратном порядке
         (tmp_path / "02_zayavka.yaml").write_text(
             yaml.dump(_minimal_mapping_data("Заявка"), allow_unicode=True),
@@ -68,7 +68,7 @@ class TestMissingFile:
     """Обработка отсутствующего файла."""
 
     def test_missing_file(self) -> None:
-        """Несуществующий файл — FileNotFoundError."""
+        """Несуществующий файл - FileNotFoundError."""
         loader = MappingLoader()
         with pytest.raises(FileNotFoundError):
             loader.load(Path("/nonexistent/mapping.yaml"))
@@ -105,7 +105,7 @@ class TestTableRowsParsing:
     """Парсинг секции table_rows с columns."""
 
     def test_table_rows_parsing(self, tmp_path: Path) -> None:
-        """Корректный парсинг table_rows — индексы, columns, override source."""
+        """Корректный парсинг table_rows - индексы, columns, override source."""
         data = _full_mapping_data()
         mapping_file = tmp_path / "test.yaml"
         mapping_file.write_text(

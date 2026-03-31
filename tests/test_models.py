@@ -15,7 +15,7 @@ class TestCompanyProfile:
     """Тесты для модели CompanyProfile."""
 
     def test_company_profile_valid(self) -> None:
-        """Загрузка company_profile.json — все поля на месте."""
+        """Загрузка company_profile.json - все поля на месте."""
         raw = json.loads((DATA_DIR / "company_profile.json").read_text(encoding="utf-8"))
         profile = CompanyProfile.model_validate(raw)
 
@@ -32,7 +32,7 @@ class TestCompanyProfile:
         assert profile.references[0].customer == "АО «Северный монтаж»"
 
     def test_optional_field_missing(self) -> None:
-        """Отсутствие необязательного поля references — модель загружается."""
+        """Отсутствие необязательного поля references - модель загружается."""
         raw = json.loads((DATA_DIR / "company_profile.json").read_text(encoding="utf-8"))
         del raw["references"]
         profile = CompanyProfile.model_validate(raw)
@@ -51,7 +51,7 @@ class TestTenderData:
     """Тесты для модели TenderData."""
 
     def test_tender_data_valid(self) -> None:
-        """Загрузка tender.json — вложенный customer + 3 позиции."""
+        """Загрузка tender.json - вложенный customer + 3 позиции."""
         raw = json.loads((DATA_DIR / "tender.json").read_text(encoding="utf-8"))
         tender = TenderData.model_validate(raw)
 
@@ -67,7 +67,7 @@ class TestTenderData:
         assert tender.items[1].qty == 600
 
     def test_optional_warranty_missing(self) -> None:
-        """Отсутствие warranty — модель загружается."""
+        """Отсутствие warranty - модель загружается."""
         raw = json.loads((DATA_DIR / "tender.json").read_text(encoding="utf-8"))
         del raw["warranty"]
         tender = TenderData.model_validate(raw)
@@ -78,7 +78,7 @@ class TestCalcData:
     """Тесты для модели CalcData."""
 
     def test_calc_data_valid(self) -> None:
-        """Загрузка calc.json — итоги совпадают."""
+        """Загрузка calc.json - итоги совпадают."""
         raw = json.loads((DATA_DIR / "calc.json").read_text(encoding="utf-8"))
         calc = CalcData.model_validate(raw)
 
@@ -95,7 +95,7 @@ class TestRequisiteValidation:
     """Тесты валидации реквизитов (ИНН, БИК и т.д.)."""
 
     def test_inn_valid_no_warning(self, caplog: pytest.LogCaptureFixture) -> None:
-        """Валидный ИНН (10 цифр) — без предупреждений."""
+        """Валидный ИНН (10 цифр) - без предупреждений."""
         raw = json.loads((DATA_DIR / "company_profile.json").read_text(encoding="utf-8"))
         with caplog.at_level(logging.WARNING):
             profile = CompanyProfile.model_validate(raw)
@@ -104,7 +104,7 @@ class TestRequisiteValidation:
         assert profile.company.inn == "7705123456"
 
     def test_inn_invalid_logs_warning(self, caplog: pytest.LogCaptureFixture) -> None:
-        """Невалидный ИНН (3 цифры) — warning в лог, но модель создаётся."""
+        """Невалидный ИНН (3 цифры) - warning в лог, но модель создаётся."""
         raw = json.loads((DATA_DIR / "company_profile.json").read_text(encoding="utf-8"))
         raw["company"]["inn"] = "123"
         with caplog.at_level(logging.WARNING):
