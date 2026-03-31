@@ -114,23 +114,34 @@ class TemplateEngine:
 
     @staticmethod
     def _set_cell_text(cell: object, value: str) -> None:
-        """Устанавливает текст ячейки, сохраняя форматирование первого Run."""
-        # Берём первый параграф ячейки
+        """Устанавливает текст ячейки, сохраняя форматирование из шаблона.
+
+        Ищет первый Run с заданным шрифтом (font.name не None) и использует
+        его как носитель форматирования. Если таких нет — берёт первый Run.
+        """
         paragraph = cell.paragraphs[0]
         runs = paragraph.runs
 
         if runs:
-            # Сохраняем первый Run (с его форматированием), остальные удаляем
-            first_run = runs[0]
-            first_run.text = value
+            # Ищем Run с явно заданным шрифтом (не пустой форматный run)
+            styled_run = None
+            for run in runs:
+                if run.font.name is not None:
+                    styled_run = run
+                    break
+            # Если не нашли — берём первый
+            if styled_run is None:
+                styled_run = runs[0]
 
-            # Удаляем лишние Run-ы из XML
-            for run in runs[1:]:
-                run._element.getparent().remove(run._element)
+            styled_run.text = value
+
+            # Удаляем остальные Run-ы
+            for run in runs:
+                if run is not styled_run:
+                    run._element.getparent().remove(run._element)
         else:
-            # Нет Run-ов — добавляем текст напрямую
             paragraph.add_run(value)
 
-        # Удаляем лишние параграфы (ячейка может содержать несколько)
+        # Удаляем лишние параграфы
         for p in cell.paragraphs[1:]:
             p._element.getparent().remove(p._element)
