@@ -1,0 +1,48 @@
+document:
+  name: "Заявка на участие в закупке"
+  template: "templates/02_zayavka.docx"
+  output_name: "02_Заявка_на_участие_в_закупке.docx"
+
+fields:
+  # Дата и номер (P1)
+  - placeholder: "[Дата в формате «26» марта 2026 года]"
+    source: SYSTEM
+    path: "current_date_long"
+    required: true
+
+  - placeholder: "[Исх. номер заявки]"
+    source: SYSTEM
+    path: "outgoing_number"
+    required: true
+
+  # Основной текст (P2)
+  - placeholder: "[Полное наименование участника]"
+    source: PROFILE
+    path: "company.full_name"
+    required: true
+
+  - placeholder: "[Юридический адрес]"
+    source: PROFILE
+    path: "company.legal_address_full"
+    required: true
+
+  - placeholder: "[Предмет закупки]"
+    source: TENDER
+    path: "subject"
+    required: true
+
+  - placeholder: "[Срок действия предложения, дней]"
+    source: TENDER
+    path: "offer_validity_days"
+    required: true
+
+  # Подпись (T0)
+  - placeholder: "[Должность подписанта]"
+    source: PROFILE
+    path: "signatory.position"
+    required: true
+
+  - placeholder: "[ФИО подписанта]"
+    source: PROFILE
+    path: "signatory.name_short"
+    required: true
