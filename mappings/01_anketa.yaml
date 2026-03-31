@@ -1,0 +1,85 @@
+document:
+  name: "Анкета участника"
+  template: "templates/01_anketa.docx"
+  output_name: "01_Анкета_участника.docx"
+
+fields:
+  # Заголовок документа (параграф P1)
+  - placeholder: "[Краткое наименование участника]"
+    source: PROFILE
+    path: "company.short_name"
+    required: true
+
+  - placeholder: "[ИНН]"
+    source: PROFILE
+    path: "company.inn"
+    required: true
+
+  # Таблица реквизитов (T0)
+  - placeholder: "[Полное наименование участника]"
+    source: PROFILE
+    path: "company.full_name"
+    required: true
+
+  - placeholder: "[КПП]"
+    source: PROFILE
+    path: "company.kpp"
+    required: true
+
+  - placeholder: "[ОГРН]"
+    source: PROFILE
+    path: "company.ogrn"
+    required: true
+
+  - placeholder: "[Юридический адрес]"
+    source: PROFILE
+    path: "company.legal_address_full"
+    required: true
+
+  # Банковские реквизиты (T0R7C1 — составное поле)
+  - placeholder: "[Расчетный счет]"
+    source: PROFILE
+    path: "bank.account"
+    required: true
+
+  - placeholder: "[Наименование банка]"
+    source: PROFILE
+    path: "bank.name"
+    required: true
+
+  - placeholder: "[Корреспондентский счет]"
+    source: PROFILE
+    path: "bank.correspondent_account"
+    required: true
+
+  - placeholder: "[БИК]"
+    source: PROFILE
+    path: "bank.bik"
+    required: true
+
+  # Контактное лицо (T0R8C1 — составное поле)
+  - placeholder: "[Контактное лицо]"
+    source: PROFILE
+    path: "contact.responsible_name_full"
+    required: true
+
+  - placeholder: "[E-mail]"
+    source: PROFILE
+    path: "contact.email"
+    required: true
+
+  - placeholder: "[Телефон]"
+    source: PROFILE
+    path: "contact.phone"
+    required: true
+
+  # Подпись (T1)
+  - placeholder: "[Должность подписанта]"
+    source: PROFILE
+    path: "signatory.position"
+    required: true
+
+  - placeholder: "[ФИО подписанта]"
+    source: PROFILE
+    path: "signatory.name_short"
+    required: true
