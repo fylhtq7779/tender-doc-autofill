@@ -1,0 +1,73 @@
+document:
+  name: "Предложение о цене договора"
+  template: "templates/03_predlozhenie.docx"
+  output_name: "03_Предложение_о_цене_договора.docx"
+
+fields:
+  # Заголовок (P1)
+  - placeholder: "[Краткое наименование участника]"
+    source: PROFILE
+    path: "company.short_name"
+    required: true
+
+  - placeholder: "[ИНН]"
+    source: PROFILE
+    path: "company.inn"
+    required: true
+
+  # Итоги (T1)
+  - placeholder: "[Итого без НДС]"
+    source: CALC
+    path: "subtotal_wo_vat"
+    required: true
+    transform: "money"
+
+  - placeholder: "[Сумма НДС]"
+    source: CALC
+    path: "vat_amount"
+    required: true
+    transform: "money"
+
+  - placeholder: "[Итого с НДС]"
+    source: CALC
+    path: "total_with_vat"
+    required: true
+    transform: "money"
+
+  # Подпись (T2)
+  - placeholder: "[Должность подписанта]"
+    source: PROFILE
+    path: "signatory.position"
+    required: true
+
+  - placeholder: "[ФИО подписанта]"
+    source: PROFILE
+    path: "signatory.name_short"
+    required: true
+
+# Таблица позиций (T0)
+table_rows:
+  - table_idx: 0
+    source: CALC
+    items_path: "items"
+    row_start: 1
+    columns:
+      0:
+        path: "line_no"
+      1:
+        path: "quote_name"
+      2:
+        path: "offer_unit"
+      3:
+        path: "nmc_unit_price"
+        source: TENDER
+        items_path: "items"
+        transform: "money"
+      4:
+        path: "unit_price_wo_vat"
+        transform: "money"
+      5:
+        path: "offer_qty"
+      6:
+        path: "line_total_wo_vat"
+        transform: "money"
