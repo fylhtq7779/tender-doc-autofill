@@ -21,6 +21,7 @@ tmp/
 
 # Claude Code
 .claude/
+CLAUDE.md
 
 # IDE
 .idea/
