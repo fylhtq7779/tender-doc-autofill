@@ -20,7 +20,7 @@ from src.utils import format_money
 
 @click.group()
 def cli() -> None:
-    """Homelio - автозаполнение тендерных DOCX-документов."""
+    """Автозаполнение тендерных DOCX-документов."""
 
 
 @cli.command()

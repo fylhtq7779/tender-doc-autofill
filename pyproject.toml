@@ -3,7 +3,7 @@ requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "homelio-tender-autofill"
+name = "tender-doc-autofill"
 version = "1.0.0"
 description = "Автозаполнение тендерных DOCX-документов по JSON-данным"
 requires-python = ">=3.11"
